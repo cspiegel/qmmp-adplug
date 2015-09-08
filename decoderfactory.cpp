@@ -1,0 +1,122 @@
+/*-
+ * Copyright 2014-2015 Chris Spiegel.
+ *
+ * This file is part of qmmp-adplug.
+ *
+ * qmmp-adplug is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version
+ * 2 or 3, as published by the Free Software Foundation.
+ *
+ * qmmp-adplug is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with qmmp-adplug.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <QIODevice>
+#include <QList>
+#include <QMessageBox>
+#include <QString>
+#include <QStringList>
+#include <QTranslator>
+#include <QtPlugin>
+
+#include <qmmp/fileinfo.h>
+#include <qmmp/qmmp.h>
+
+#include "decoderfactory.h"
+#include "adplugwrap.h"
+#include "decoder.h"
+#include "magic.h"
+#include "metadatamodel.h"
+
+bool AdplugDecoderFactory::supports(const QString &source) const
+{
+  for(const QString &ext : properties().filters)
+  {
+    if(source.right(4).toLower() == ext.right(4).toLower())
+    {
+      return true;
+    }
+  }
+
+  return adplug_supports(source.toUtf8().constData());
+}
+
+bool AdplugDecoderFactory::canDecode(QIODevice *) const
+{
+  return false;
+}
+
+const DecoderProperties AdplugDecoderFactory::properties() const
+{
+  DecoderProperties properties;
+
+  properties.name = tr("AdPlug Plugin");
+  properties.filters << "*.adl" << "*.hsc" << "*.ksm" << "*.lds";
+  properties.description = tr("AdPlug (Adlib) Files");
+  properties.shortName = "cas-adplug";
+  properties.hasAbout = true;
+  properties.hasSettings = false;
+  properties.noInput = true;
+  properties.protocols << "file";
+
+  return properties;
+}
+
+Decoder *AdplugDecoderFactory::create(const QString &path, QIODevice *)
+{
+  return new AdplugDecoder(path);
+}
+
+#if QMMP_VERSION_MAJOR == 0 && QMMP_VERSION_MINOR == 8
+QList<FileInfo *> AdplugDecoderFactory::createPlayList(const QString &filename, bool)
+#elif QMMP_VERSION_MAJOR == 0 && QMMP_VERSION_MINOR == 9
+QList<FileInfo *> AdplugDecoderFactory::createPlayList(const QString &filename, bool, QStringList *)
+#endif
+{
+  QList<FileInfo *> list;
+
+  try
+  {
+    AdplugWrap adplug(filename.toUtf8().constData());
+    FileInfo *file_info = new FileInfo(filename);
+
+    file_info->setLength(adplug.length() / 1000);
+
+    list << file_info;
+  }
+  catch(AdplugWrap::InvalidFile)
+  {
+  }
+
+  return list;
+}
+
+MetaDataModel *AdplugDecoderFactory::createMetaDataModel(const QString &path, QObject *parent)
+{
+  return new AdplugMetaDataModel(path, parent);
+}
+
+void AdplugDecoderFactory::showSettings(QWidget *)
+{
+}
+
+void AdplugDecoderFactory::showAbout(QWidget *parent)
+{
+  QString title = tr("About Adplug Audio Plugin");
+  QString text = tr("Adplug Audio Plugin");
+  text += "\n";
+  text += tr("Written by: Chris Spiegel <cspiegel@gmail.com>");
+  QMessageBox::about(parent, title, text);
+}
+
+QTranslator *AdplugDecoderFactory::createTranslator(QObject *)
+{
+  return nullptr;
+}
+
+Q_EXPORT_PLUGIN2(cas-adplug, AdplugDecoderFactory)
