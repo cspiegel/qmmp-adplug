@@ -56,9 +56,9 @@ class InputStreamQIO : public InputStream
 
 bool AdplugDecoderFactory::supports(const QString &source) const
 {
-  for(const QString &ext : properties().filters)
+  for(const QString &pattern : properties().filters)
   {
-    if(source.right(4).toLower() == ext.right(4).toLower())
+    if(QRegExp(pattern, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(source))
     {
       return true;
     }
