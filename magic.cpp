@@ -8,45 +8,40 @@
 
 #include "magic.h"
 
-class Matcher {
+class Matcher
+{
   public:
-    virtual bool matches(std::ifstream &) = 0;
-
-  protected:
-    bool read(std::ifstream &stream, off_t offset, void *buf, size_t n)
-    {
-      return !stream.seekg(offset, std::ios_base::beg).fail() && !stream.read(reinterpret_cast<char *>(buf), n).fail();
-    }
+    virtual bool matches(InputStream &) = 0;
 };
 
 class Magic : public Matcher
 {
   public:
-    Magic(size_t offset, const char *magic) : offset(offset), magic(magic), len(strlen(magic)) { }
-    Magic(size_t offset, const char *magic, size_t len) : offset(offset), magic(magic), len(len) { }
+    Magic(std::size_t offset, const char *magic) : offset(offset), magic(magic), len(strlen(magic)) { }
+    Magic(std::size_t offset, const char *magic, std::size_t len) : offset(offset), magic(magic), len(len) { }
 
-    bool matches(std::ifstream &stream)
+    bool matches(InputStream &stream)
     {
       std::vector<char> buf(len);
 
-      return read(stream, offset, buf.data(), buf.size()) && std::memcmp(buf.data(), magic, buf.size()) == 0;
+      return stream.read(offset, buf.data(), buf.size()) && std::memcmp(buf.data(), magic, buf.size()) == 0;
     }
 
   private:
-    const size_t offset;
+    const std::size_t offset;
     const char *magic;
-    const size_t len;
+    const std::size_t len;
 };
 
 /* DMO decrypt code based on Adplug. */
 class DMOMatcher : public Matcher
 {
   public:
-    bool matches(std::ifstream &stream)
+    bool matches(InputStream &stream)
     {
       unsigned char header[12];
 
-      return read(stream, 0, header, sizeof header) && decrypt(header);
+      return stream.read(0, header, sizeof header) && decrypt(header);
     }
 
   private:
@@ -112,11 +107,11 @@ class DMOMatcher : public Matcher
 class OriginMatcher : public Matcher
 {
   /* I've found few false-positives with this... */
-  bool matches(std::ifstream &stream)
+  bool matches(InputStream &stream)
   {
     unsigned char header[6];
 
-    if(!read(stream, 0, header, sizeof header)) return false;
+    if(!stream.read(0, header, sizeof header)) return false;
 
     /* TrueType files match Origin magic, so try to detect them here.
      * All .m files I've tested pass this.
@@ -130,15 +125,8 @@ class OriginMatcher : public Matcher
   }
 };
 
-bool adplug_supports(std::string filename)
+bool adplug_supports(InputStream &&stream)
 {
-  std::ifstream stream(filename.c_str(), std::ios::binary);
-
-  if(!stream)
-  {
-    return false;
-  }
-
   std::vector<std::shared_ptr<Matcher>> matchers = {
     /* AdLib Tracker 2 (.a2m) */
     std::shared_ptr<Matcher>(new Magic(0, "_A2module_")),

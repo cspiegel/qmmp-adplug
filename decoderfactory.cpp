@@ -16,6 +16,7 @@
  * along with qmmp-adplug.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QFile>
 #include <QIODevice>
 #include <QList>
 #include <QMessageBox>
@@ -33,6 +34,26 @@
 #include "magic.h"
 #include "metadatamodel.h"
 
+class InputStreamQIO : public InputStream
+{
+  public:
+    explicit InputStreamQIO(QIODevice *device) : device(device) { }
+
+    bool read(std::size_t offset, void *buf, std::size_t n)
+    {
+      qint64 ret;
+
+      if(!device->seek(offset)) return false;
+
+      ret = device->read(reinterpret_cast<char *>(buf), n);
+      
+      return ret > 0 && ret == (qint64)n;
+    }
+
+  private:
+    QIODevice *device;
+};
+
 bool AdplugDecoderFactory::supports(const QString &source) const
 {
   for(const QString &ext : properties().filters)
@@ -43,12 +64,13 @@ bool AdplugDecoderFactory::supports(const QString &source) const
     }
   }
 
-  return adplug_supports(source.toUtf8().constData());
+  QFile file(source);
+  return file.open(QIODevice::ReadOnly) && adplug_supports(InputStreamQIO(&file));
 }
 
-bool AdplugDecoderFactory::canDecode(QIODevice *) const
+bool AdplugDecoderFactory::canDecode(QIODevice *device) const
 {
-  return false;
+  return adplug_supports(InputStreamQIO(device));
 }
 
 const DecoderProperties AdplugDecoderFactory::properties() const
