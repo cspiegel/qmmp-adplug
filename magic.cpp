@@ -129,85 +129,85 @@ bool adplug_supports(InputStream &&stream)
 {
   std::vector<std::shared_ptr<Matcher>> matchers = {
     /* AdLib Tracker 2 (.a2m) */
-    std::shared_ptr<Matcher>(new Magic(0, "_A2module_")),
+    std::make_shared<Magic>(0, "_A2module_"),
 
     /* AMUSIC Adlib Tracker (.amd) */
-    std::shared_ptr<Matcher>(new Magic(1062, "<o\xefQU\xeeRoR")),
+    std::make_shared<Magic>(1062, "<o\xefQU\xeeRoR"),
 
     /* Bob's Adlib Music Format (.bam) */
-    std::shared_ptr<Matcher>(new Magic(0, "CBMF")),
+    std::make_shared<Magic>(0, "CBMF"),
 
     /* BoomTracker 4.0 (.cff) */
-    std::shared_ptr<Matcher>(new Magic(0, "<CUD-FM-File>")),
+    std::make_shared<Magic>(0, "<CUD-FM-File>"),
 
     /* Creative Music File Format (.cmf) */
-    std::shared_ptr<Matcher>(new Magic(0, "CTMF")),
+    std::make_shared<Magic>(0, "CTMF"),
 
     /* EdLib (.d00) */
-    std::shared_ptr<Matcher>(new Magic(0, "JCH\x26\x02\x66")),
+    std::make_shared<Magic>(0, "JCH\x26\x02\x66"),
 
     /* Digital-FM (.dfm) */
-    std::shared_ptr<Matcher>(new Magic(0, "DFM\x1a")),
+    std::make_shared<Magic>(0, "DFM\x1a"),
 
     /* DOSBox Raw OPL (.dro) */
-    std::shared_ptr<Matcher>(new Magic(0, "DBRAWOPL")),
+    std::make_shared<Magic>(0, "DBRAWOPL"),
 
     /* DeFy Adlib Tracker (.dtm) */
-    std::shared_ptr<Matcher>(new Magic(0, "DeFy DTM ")),
+    std::make_shared<Magic>(0, "DeFy DTM "),
 
     /* LucasArts AdLib Audio (.laa) */
-    std::shared_ptr<Matcher>(new Magic(0, "ADL")),
+    std::make_shared<Magic>(0, "ADL"),
 
     /* Mlat Adlib Tracker (.mad) */
-    std::shared_ptr<Matcher>(new Magic(0, "MAD+")),
+    std::make_shared<Magic>(0, "MAD+"),
 
     /* MKJamz (.mkj) */
-    std::shared_ptr<Matcher>(new Magic(0, "MKJamz")),
+    std::make_shared<Magic>(0, "MKJamz"),
 
     /* AdLib MSCplay (.msc) */
-    std::shared_ptr<Matcher>(new Magic(0, "Ceres \x13 MSCplay ")),
+    std::make_shared<Magic>(0, "Ceres \x13 MSCplay "),
 
     /* MPU-401 Trakker (.mtk) */
-    std::shared_ptr<Matcher>(new Magic(0, "mpu401tr\x92kk\xeer@data")),
+    std::make_shared<Magic>(0, "mpu401tr\x92kk\xeer@data"),
 
     /* Reality ADlib Tracker (.rad) */
-    std::shared_ptr<Matcher>(new Magic(0, "RAD by REALiTY!!")),
+    std::make_shared<Magic>(0, "RAD by REALiTY!!"),
 
     /* RdosPlay RAW file format (.raw) */
-    std::shared_ptr<Matcher>(new Magic(0, "RAWADATA")),
+    std::make_shared<Magic>(0, "RAWADATA"),
 
     /* Softstar RIX OPL (.rix) */
-    std::shared_ptr<Matcher>(new Magic(0, "\xaa\x55")),
+    std::make_shared<Magic>(0, "\xaa\x55"),
 
     /* AdLib Visual Composer (.rol) */
-    std::shared_ptr<Matcher>(new Magic(0, "\0\0\4\0", 4)),
+    std::make_shared<Magic>(0, "\0\0\4\0", 4),
 
     /* Surprise! Adlib Tracker 1 & 2 (.sat, .sa2) */
-    std::shared_ptr<Matcher>(new Magic(0, "SAdT")),
+    std::make_shared<Magic>(0, "SAdT"),
 
     /* Sierra's AdLib Audio (.sci) */
-    std::shared_ptr<Matcher>(new Magic(0, "\x84\x00", 2)),
+    std::make_shared<Magic>(0, "\x84\x00", 2),
 
     /* SNGPlay (.sng) */
-    std::shared_ptr<Matcher>(new Magic(0, "ObsM")),
+    std::make_shared<Magic>(0, "ObsM"),
 
     /* Faust Music Creator (.sng) */
-    std::shared_ptr<Matcher>(new Magic(0, "FMC!")),
+    std::make_shared<Magic>(0, "FMC!"),
 
     /* eXotic ADlib Format (.xad) */
-    std::shared_ptr<Matcher>(new Magic(0, "XAD!")),
+    std::make_shared<Magic>(0, "XAD!"),
 
     /* XMS-Tracker (.xms) */
-    std::shared_ptr<Matcher>(new Magic(1062, "MaDoKaN96")),
+    std::make_shared<Magic>(1062, "MaDoKaN96"),
 
     /* eXtra Simple Music (.xsm) */
-    std::shared_ptr<Matcher>(new Magic(0, "ofTAZ!")),
+    std::make_shared<Magic>(0, "ofTAZ!"),
 
     /* Twin TrackPlayer by TwinTeam (.dmo) */
-    std::shared_ptr<Matcher>(new DMOMatcher()),
+    std::make_shared<DMOMatcher>(),
 
     /* Origin AdLib Music Format (.m) */
-    std::shared_ptr<Matcher>(new OriginMatcher()),
+    std::make_shared<OriginMatcher>(),
   };
 
   return std::any_of(
