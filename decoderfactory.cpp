@@ -46,7 +46,7 @@ class InputStreamQIO : public InputStream
       if(!device->seek(offset)) return false;
 
       ret = device->read(reinterpret_cast<char *>(buf), n);
-      
+
       return ret > 0 && ret == (qint64)n;
     }
 
