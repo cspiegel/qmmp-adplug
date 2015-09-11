@@ -47,16 +47,17 @@ class DMOMatcher : public Matcher
   private:
     quint32 bseed;
 
-    inline quint16 le16(const unsigned char *p) { return ((quint16)    ( p[1]) <<  8) |     ( p[0]); }
-    inline quint32 le32(const unsigned char *p) { return ((quint32)le16(&p[2]) << 16) | le16(&p[0]); }
+    static quint16 le16(const unsigned char *p) { return ((quint16)    ( p[1]) <<  8) |     ( p[0]); }
+    static quint32 le32(const unsigned char *p) { return ((quint32)le16(&p[2]) << 16) | le16(&p[0]); }
 
-    quint16 LOWORD(quint32 l) { return l & 0xffff; }
-    quint16 HIWORD(quint32 l) { return l >> 16; }
-    quint8  LOBYTE(quint16 w) { return w & 0xff; }
-    quint8  HIBYTE(quint16 w) { return w >> 8; }
+    static quint16 LOWORD(quint32 l) { return l & 0xffff; }
+    static quint16 HIWORD(quint32 l) { return l >> 16; }
+    static quint8  LOBYTE(quint16 w) { return w & 0xff; }
+    static quint8  HIBYTE(quint16 w) { return w >> 8; }
 
-    int brand(quint16 range)
+    static int brand(quint32 &bseed)
     {
+      quint16 range = 0xffff;
       quint16 ax, bx, cx, dx;
 
       ax = LOWORD(bseed);
@@ -83,8 +84,9 @@ class DMOMatcher : public Matcher
       return HIWORD(HIWORD(LOWORD(bseed) * range) + HIWORD(bseed) * range);
     }
 
-    bool decrypt(unsigned char *header)
+    static bool decrypt(const unsigned char *header)
     {
+      quint32 bseed;
       quint32 seed = 0;
       unsigned char zeros[12] = { 0 };
 
@@ -96,11 +98,11 @@ class DMOMatcher : public Matcher
 
       bseed = le32(&header[0]);
 
-      for(int i = 0; i < le16(&header[4]) + 1; i++) seed += brand(0xffff);
+      for(int i = 0; i < le16(&header[4]) + 1; i++) seed += brand(bseed);
 
       bseed = seed ^ le32(&header[6]);
 
-      return le16(&header[10]) == brand(0xffff);
+      return le16(&header[10]) == brand(bseed);
     }
 };
 
