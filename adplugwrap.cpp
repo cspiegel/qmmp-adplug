@@ -21,7 +21,7 @@ AdplugWrap::Frame AdplugWrap::read()
 
   if(remaining == 0)
   {
-    if(!player->update()) return Frame(0, 0);
+    if(!player->update()) return Frame(0, nullptr);
     remaining = rate() / player->getrefresh();
   }
 
