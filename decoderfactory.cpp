@@ -94,11 +94,7 @@ Decoder *AdplugDecoderFactory::create(const QString &path, QIODevice *)
   return new AdplugDecoder(path);
 }
 
-#if QMMP_VERSION_MAJOR == 0 && QMMP_VERSION_MINOR == 8
-QList<FileInfo *> AdplugDecoderFactory::createPlayList(const QString &filename, bool)
-#elif QMMP_VERSION_MAJOR == 0 && QMMP_VERSION_MINOR == 9
 QList<FileInfo *> AdplugDecoderFactory::createPlayList(const QString &filename, bool, QStringList *)
-#endif
 {
   QList<FileInfo *> list;
 
@@ -140,5 +136,3 @@ QTranslator *AdplugDecoderFactory::createTranslator(QObject *)
 {
   return nullptr;
 }
-
-Q_EXPORT_PLUGIN2(cas-adplug, AdplugDecoderFactory)
