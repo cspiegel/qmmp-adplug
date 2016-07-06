@@ -61,7 +61,7 @@ int AdplugDecoder::bitrate()
   return adplug->depth();
 }
 
-qint64 AdplugDecoder::read(char *audio, qint64 max_size)
+qint64 AdplugDecoder::read(unsigned char *audio, qint64 max_size)
 {
   qint64 copied;
 
@@ -91,7 +91,7 @@ qint64 AdplugDecoder::read(char *audio, qint64 max_size)
   return copied;
 }
 
-qint64 AdplugDecoder::copy(char *audio, qint64 max_size)
+qint64 AdplugDecoder::copy(unsigned char *audio, qint64 max_size)
 {
   qint64 to_copy;
 
