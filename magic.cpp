@@ -45,8 +45,6 @@ class DMOMatcher : public Matcher
     }
 
   private:
-    quint32 bseed;
-
     static quint16 le16(const unsigned char *p) { return ((quint16)    ( p[1]) <<  8) |     ( p[0]); }
     static quint32 le32(const unsigned char *p) { return ((quint32)le16(&p[2]) << 16) | le16(&p[0]); }
 
