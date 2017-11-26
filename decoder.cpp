@@ -51,12 +51,12 @@ bool AdplugDecoder::initialize()
   return true;
 }
 
-qint64 AdplugDecoder::totalTime()
+qint64 AdplugDecoder::totalTime() const
 {
   return adplug->length();
 }
 
-int AdplugDecoder::bitrate()
+int AdplugDecoder::bitrate() const
 {
   return adplug->depth();
 }
