@@ -21,7 +21,7 @@ class Magic : public Matcher
     Magic(std::size_t offset, const char *magic) : offset(offset), magic(magic), len(strlen(magic)) { }
     Magic(std::size_t offset, const char *magic, std::size_t len) : offset(offset), magic(magic), len(len) { }
 
-    bool matches(InputStream &stream)
+    bool matches(InputStream &stream) override
     {
       std::vector<char> buf(len);
 
@@ -38,7 +38,7 @@ class Magic : public Matcher
 class DMOMatcher : public Matcher
 {
   public:
-    bool matches(InputStream &stream)
+    bool matches(InputStream &stream) override
     {
       unsigned char header[12];
 
@@ -108,7 +108,7 @@ class DMOMatcher : public Matcher
 class OriginMatcher : public Matcher
 {
   /* I've found few false-positives with this... */
-  bool matches(InputStream &stream)
+  bool matches(InputStream &stream) override
   {
     unsigned char header[6];
 
@@ -128,7 +128,7 @@ class OriginMatcher : public Matcher
 
 class GodOfThunderMatcher : public Matcher
 {
-  bool matches(InputStream &stream)
+  bool matches(InputStream &stream) override
   {
     try
     {
@@ -144,7 +144,7 @@ class GodOfThunderMatcher : public Matcher
 
       return true;
     }
-    catch(InputStream::NoRandomAccess)
+    catch(const InputStream::NoRandomAccess &)
     {
       return false;
     }

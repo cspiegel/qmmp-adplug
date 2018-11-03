@@ -38,7 +38,7 @@ bool AdplugDecoder::initialize()
   {
     adplug = std::unique_ptr<AdplugWrap>(new AdplugWrap(path.toUtf8().constData()));
   }
-  catch(AdplugWrap::InvalidFile)
+  catch(const AdplugWrap::InvalidFile &)
   {
     return false;
   }

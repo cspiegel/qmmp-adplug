@@ -26,7 +26,7 @@ class AdplugWrap
         InvalidFile() : std::exception() { }
     };
 
-    explicit AdplugWrap(std::string);
+    explicit AdplugWrap(const std::string &);
     AdplugWrap(const AdplugWrap &) = delete;
     AdplugWrap &operator=(const AdplugWrap &) = delete;
 
@@ -53,7 +53,7 @@ class AdplugWrap
   private:
     std::unique_ptr<Copl> opl;
     std::unique_ptr<CPlayer> player;
-    short buf[16384];
+    short buf[16384] = { 0 };
     size_t remaining = 0;
 };
 

@@ -100,7 +100,7 @@ QList<FileInfo *> AdplugDecoderFactory::createPlayList(const QString &filename, 
 
     list << file_info;
   }
-  catch(AdplugWrap::InvalidFile)
+  catch(const AdplugWrap::InvalidFile &)
   {
   }
 

@@ -34,7 +34,7 @@ AdplugMetaDataModel::AdplugMetaDataModel(const QString &path, QObject *parent) :
     fill_in_audio_properties(adplug);
     fill_in_descriptions(adplug);
   }
-  catch(AdplugWrap::InvalidFile)
+  catch(const AdplugWrap::InvalidFile &)
   {
   }
 }

@@ -7,7 +7,7 @@
 
 #include "adplugwrap.h"
 
-AdplugWrap::AdplugWrap(std::string filename) :
+AdplugWrap::AdplugWrap(const std::string &filename) :
   opl(new CEmuopl(rate(), true, false)),
   player(CAdPlug::factory(filename.c_str(), opl.get()))
 {
