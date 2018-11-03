@@ -12,6 +12,7 @@ class Matcher
 {
   public:
     virtual bool matches(InputStream &) = 0;
+    virtual ~Matcher() = default;
 };
 
 class Magic : public Matcher
