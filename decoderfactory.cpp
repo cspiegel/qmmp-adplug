@@ -61,20 +61,6 @@ class InputStreamQIO : public InputStream
     QIODevice *device;
 };
 
-bool AdplugDecoderFactory::supports(const QString &source) const
-{
-  for(const QString &pattern : properties().filters)
-  {
-    if(QRegExp(pattern, Qt::CaseInsensitive, QRegExp::Wildcard).exactMatch(source))
-    {
-      return true;
-    }
-  }
-
-  QFile file(source);
-  return file.open(QIODevice::ReadOnly) && adplug_supports(InputStreamQIO(&file));
-}
-
 bool AdplugDecoderFactory::canDecode(QIODevice *device) const
 {
   return adplug_supports(InputStreamQIO(device));

@@ -38,7 +38,6 @@ class AdplugDecoderFactory : public QObject, DecoderFactory
   Q_INTERFACES(DecoderFactory)
 
   public:
-    bool supports(const QString &) const;
     bool canDecode(QIODevice *) const;
     const DecoderProperties properties() const;
     Decoder *create(const QString &, QIODevice *);
