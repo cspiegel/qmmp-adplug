@@ -50,6 +50,13 @@ class InputStreamQIO : public InputStream
       return ret > 0 && ret == (qint64)n;
     }
 
+    size_t size()
+    {
+      if(device->isSequential() || !device->isOpen()) throw InputStream::NoRandomAccess();
+
+      return device->size();
+    }
+
   private:
     QIODevice *device;
 };

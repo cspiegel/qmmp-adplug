@@ -126,6 +126,31 @@ class OriginMatcher : public Matcher
   }
 };
 
+class GodOfThunderMatcher : public Matcher
+{
+  bool matches(InputStream &stream)
+  {
+    try
+    {
+      unsigned char header[2];
+      unsigned char footer[4];
+      size_t size = stream.size();
+
+      if(size % 3 != 0 || size < 9) return false;
+      if(!stream.read(0, header, sizeof header)) return false;
+      if(std::memcmp(header, "\1\0", 2) != 0) return false;
+      if(!stream.read(size - 4, footer, sizeof footer)) return false;
+      if(std::memcmp(footer, "\0\0\0\0", 4) != 0) return false;
+
+      return true;
+    }
+    catch(InputStream::NoRandomAccess)
+    {
+      return false;
+    }
+  }
+};
+
 bool adplug_supports(InputStream &&stream)
 {
   std::vector<std::shared_ptr<Matcher>> matchers = {
@@ -204,11 +229,27 @@ bool adplug_supports(InputStream &&stream)
     /* eXtra Simple Music (.xsm) */
     std::make_shared<Magic>(0, "ofTAZ!"),
 
+    /* BMF Adlib Tracker (.bmf) */
+    std::make_shared<Magic>(0, "BMF1.1"),
+    std::make_shared<Magic>(0, "BMF1.2"),
+
+    /* SoundFX Macs Opera CMF (.cmf) */
+    std::make_shared<Magic>(0, "A.H."),
+
+    /* Note Sequencer by sopepos (.sop) */
+    std::make_shared<Magic>(0, "sopepos"),
+
+    /* Video Game Music (.vgm) */
+    std::make_shared<Magic>(0, "Vgm "),
+
     /* Twin TrackPlayer by TwinTeam (.dmo) */
     std::make_shared<DMOMatcher>(),
 
     /* Origin AdLib Music Format (.m) */
     std::make_shared<OriginMatcher>(),
+
+    /* God of Thunder Music (.got) */
+    std::make_shared<GodOfThunderMatcher>(),
   };
 
   return std::any_of(
