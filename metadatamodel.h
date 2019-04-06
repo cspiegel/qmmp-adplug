@@ -29,19 +29,19 @@
 
 class AdplugMetaDataModel : public MetaDataModel
 {
-  Q_OBJECT
+  Q_DECLARE_TR_FUNCTIONS(AdplugMetaDataModel)
 
   public:
-    AdplugMetaDataModel(const QString &, QObject *);
-    QHash<QString, QString> audioProperties();
-    QHash<QString, QString> descriptions();
+    AdplugMetaDataModel(const QString &);
+    QList<MetaDataItem> extraProperties() const override;
+    QList<MetaDataItem> descriptions() const override;
 
   private:
-    void fill_in_audio_properties(AdplugWrap &);
+    void fill_in_extra_properties(AdplugWrap &);
     void fill_in_descriptions(AdplugWrap &);
 
-    QHash<QString, QString> ap;
-    QHash<QString, QString> desc;
+    QList<MetaDataItem> ap;
+    QList<MetaDataItem> desc;
 };
 
 #endif

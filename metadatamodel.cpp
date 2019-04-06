@@ -25,13 +25,13 @@
 
 #include "metadatamodel.h"
 
-AdplugMetaDataModel::AdplugMetaDataModel(const QString &path, QObject *parent) :
-  MetaDataModel(parent)
+AdplugMetaDataModel::AdplugMetaDataModel(const QString &path) :
+  MetaDataModel(true)
 {
   try
   {
     AdplugWrap adplug(path.toUtf8().constData());
-    fill_in_audio_properties(adplug);
+    fill_in_extra_properties(adplug);
     fill_in_descriptions(adplug);
   }
   catch(const AdplugWrap::InvalidFile &)
@@ -39,7 +39,7 @@ AdplugMetaDataModel::AdplugMetaDataModel(const QString &path, QObject *parent) :
   }
 }
 
-void AdplugMetaDataModel::fill_in_audio_properties(AdplugWrap &adplug)
+void AdplugMetaDataModel::fill_in_extra_properties(AdplugWrap &adplug)
 {
   if(adplug.instrument_count() != 0)
   {
@@ -49,32 +49,33 @@ void AdplugMetaDataModel::fill_in_audio_properties(AdplugWrap &adplug)
     {
       text += QString::fromStdString(s) + "\n";
     }
-    desc.insert(tr("Instruments"), text);
+    desc << MetaDataItem(tr("Instruments"), text);
   }
 }
 
 void AdplugMetaDataModel::fill_in_descriptions(AdplugWrap &adplug)
 {
-  ap.insert(tr("Title"), QString::fromStdString(adplug.title()));
-  ap.insert(tr("Format"), QString::fromStdString(adplug.format()));
-  ap.insert(tr("Author"), QString::fromStdString(adplug.author()));
-  ap.insert(tr("Description"), QString::fromStdString(adplug.author()));
+  ap << MetaDataItem(tr("Title"), QString::fromStdString(adplug.title()));
+  ap << MetaDataItem(tr("Title"), QString::fromStdString(adplug.title()));
+  ap << MetaDataItem(tr("Format"), QString::fromStdString(adplug.format()));
+  ap << MetaDataItem(tr("Author"), QString::fromStdString(adplug.author()));
+  ap << MetaDataItem(tr("Description"), QString::fromStdString(adplug.author()));
   if(adplug.pattern_count() != 0)
   {
-    ap.insert(tr("Patterns"), QString::number(adplug.pattern_count()));
+    ap << MetaDataItem(tr("Patterns"), QString::number(adplug.pattern_count()));
   }
   if(adplug.instrument_count() != 0)
   {
-    ap.insert(tr("Instruments"), QString::number(adplug.instrument_count()));
+    ap << MetaDataItem(tr("Instruments"), QString::number(adplug.instrument_count()));
   }
 }
 
-QHash<QString, QString> AdplugMetaDataModel::audioProperties()
+QList<MetaDataItem> AdplugMetaDataModel::extraProperties() const
 {
   return ap;
 }
 
-QHash<QString, QString> AdplugMetaDataModel::descriptions()
+QList<MetaDataItem> AdplugMetaDataModel::descriptions() const
 {
   return desc;
 }

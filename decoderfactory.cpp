@@ -25,7 +25,6 @@
 #include <QTranslator>
 #include <QtPlugin>
 
-#include <qmmp/fileinfo.h>
 #include <qmmp/qmmp.h>
 
 #include "decoderfactory.h"
@@ -66,7 +65,7 @@ bool AdplugDecoderFactory::canDecode(QIODevice *device) const
   return adplug_supports(InputStreamQIO(device));
 }
 
-const DecoderProperties AdplugDecoderFactory::properties() const
+DecoderProperties AdplugDecoderFactory::properties() const
 {
   DecoderProperties properties;
 
@@ -87,29 +86,32 @@ Decoder *AdplugDecoderFactory::create(const QString &path, QIODevice *)
   return new AdplugDecoder(path);
 }
 
-QList<FileInfo *> AdplugDecoderFactory::createPlayList(const QString &filename, bool, QStringList *)
+QList<TrackInfo *> AdplugDecoderFactory::createPlayList(const QString &filename, TrackInfo::Parts parts, QStringList *)
 {
-  QList<FileInfo *> list;
+  QList<TrackInfo *> list;
 
-  try
+  if(parts & TrackInfo::Properties)
   {
-    AdplugWrap adplug(filename.toUtf8().constData());
-    FileInfo *file_info = new FileInfo(filename);
+    try
+    {
+      AdplugWrap adplug(filename.toUtf8().constData());
+      TrackInfo *file_info = new TrackInfo(filename);
 
-    file_info->setLength(adplug.length() / 1000);
+      file_info->setDuration(adplug.length() / 1000);
 
-    list << file_info;
-  }
-  catch(const AdplugWrap::InvalidFile &)
-  {
+      list << file_info;
+    }
+    catch(const AdplugWrap::InvalidFile &)
+    {
+    }
   }
 
   return list;
 }
 
-MetaDataModel *AdplugDecoderFactory::createMetaDataModel(const QString &path, QObject *parent)
+MetaDataModel *AdplugDecoderFactory::createMetaDataModel(const QString &path, bool)
 {
-  return new AdplugMetaDataModel(path, parent);
+  return new AdplugMetaDataModel(path);
 }
 
 void AdplugDecoderFactory::showSettings(QWidget *)
@@ -125,7 +127,7 @@ void AdplugDecoderFactory::showAbout(QWidget *parent)
   QMessageBox::about(parent, title, text);
 }
 
-QTranslator *AdplugDecoderFactory::createTranslator(QObject *)
+QString AdplugDecoderFactory::translation() const
 {
-  return nullptr;
+  return QString(":/cas-adplug_plugin_");
 }
