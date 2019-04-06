@@ -11,8 +11,8 @@ unix {
   CONFIG += link_pkgconfig
   PKGCONFIG += qmmp adplug
 
-  QMMP_PREFIX = $$system(pkg-config qmmp --var=prefix)
-  PLUGIN_DIR = $$system(pkg-config qmmp --var=plugindir)/Input
+  QMMP_PREFIX = $$system(pkg-config qmmp --variable=prefix)
+  PLUGIN_DIR = $$system(pkg-config qmmp --variable=plugindir)/Input
   INCLUDEPATH += $${QMMP_PREFIX}/include
 
   plugin.path = $${PLUGIN_DIR}
