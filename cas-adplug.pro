@@ -7,12 +7,14 @@ TEMPLATE = lib
 
 QMAKE_CLEAN += lib$${TARGET}.so
 
+QT += widgets
+
 unix {
   CONFIG += link_pkgconfig
-  PKGCONFIG += qmmp-1 adplug
+  PKGCONFIG += qmmp adplug
 
-  QMMP_PREFIX = $$system(pkg-config qmmp-1 --variable=prefix)
-  PLUGIN_DIR = $$system(pkg-config qmmp-1 --variable=plugindir)/Input
+  QMMP_PREFIX = $$system(pkg-config qmmp --variable=prefix)
+  PLUGIN_DIR = $$system(pkg-config qmmp --variable=plugindir)/Input
   LOCAL_INCLUDES = $${QMMP_PREFIX}/include
   LOCAL_INCLUDES -= $$QMAKE_DEFAULT_INCDIRS
   INCLUDEPATH += $$LOCAL_INCLUDES

@@ -1,4 +1,4 @@
-This is a plugin for Qmmp1 (1.6.0 or greater) which supports AdLib file
+This is a plugin for Qmmp which supports AdLib file
 formats using AdPlug (http://adplug.github.io/).
 
 The following packages are required, including development headers,
@@ -6,12 +6,12 @@ which some vendors split into separate packages:
 
 • qmmp
 • adplug
-• qt5
+• qt6
 
-To build, run Qt5's qmake (often installed as qmake-qt5) and then build
+To build, run Qt6's qmake (often installed as qmake6) and then build
 with make:
 
-$ qmake-qt5
+$ qmake6
 $ make
 
 To install:
