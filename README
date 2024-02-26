@@ -4,18 +4,21 @@ formats using AdPlug (http://adplug.github.io/).
 The following packages are required, including development headers,
 which some vendors split into separate packages:
 
-• qmmp
+• qmmp (either 1.x or 2.x)
 • adplug
-• qt6
+• qt (5 for qmmp 1.x and 6 for qmmp 2.x)
 
-To build, run Qt6's qmake (often installed as qmake6) and then build
-with make:
+To build, run Qt's qmake:
 
+If you are building for qmmp 1.x, run:
+$ qmake-qt5
+And if you are building for qmmp 2.x, run:
 $ qmake6
+
+Then build with make:
 $ make
 
 To install:
-
 $ make install
 
 This installs the plugin into Qmmp's input plugin directory.  To install
