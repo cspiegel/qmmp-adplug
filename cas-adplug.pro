@@ -7,12 +7,23 @@ TEMPLATE = lib
 
 QMAKE_CLEAN += lib$${TARGET}.so
 
+QT += widgets
+
 unix {
   CONFIG += link_pkgconfig
-  PKGCONFIG += qmmp-1 adplug
 
-  QMMP_PREFIX = $$system(pkg-config qmmp-1 --variable=prefix)
-  PLUGIN_DIR = $$system(pkg-config qmmp-1 --variable=plugindir)/Input
+  equals(QT_MAJOR_VERSION, 5) {
+    QMMP = qmmp-1
+  } else: equals(QT_MAJOR_VERSION, 6) {
+    QMMP = qmmp
+  } else {
+    error("Unsupported Qt version: 5 or 6 is required")
+  }
+
+  PKGCONFIG += $${QMMP} adplug
+
+  QMMP_PREFIX = $$system(pkg-config $${QMMP} --variable=prefix)
+  PLUGIN_DIR = $$system(pkg-config $${QMMP} --variable=plugindir)/Input
   LOCAL_INCLUDES = $${QMMP_PREFIX}/include
   LOCAL_INCLUDES -= $$QMAKE_DEFAULT_INCDIRS
   INCLUDEPATH += $$LOCAL_INCLUDES
