@@ -43,7 +43,7 @@ class AdplugDecoderFactory : public QObject, DecoderFactory
     Decoder *create(const QString &, QIODevice *) override;
     QList<TrackInfo *> createPlayList(const QString &, TrackInfo::Parts, QStringList *) override;
     MetaDataModel *createMetaDataModel(const QString &, bool) override;
-    void showSettings(QWidget *) override;
+    QDialog *createSettings(QWidget *parent) override;
     void showAbout(QWidget *) override;
     QString translation() const override;
 };
