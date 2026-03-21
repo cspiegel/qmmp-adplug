@@ -114,8 +114,9 @@ MetaDataModel *AdplugDecoderFactory::createMetaDataModel(const QString &path, bo
   return new AdplugMetaDataModel(path);
 }
 
-void AdplugDecoderFactory::showSettings(QWidget *)
+QDialog *AdplugDecoderFactory::createSettings(QWidget *)
 {
+  return nullptr;
 }
 
 void AdplugDecoderFactory::showAbout(QWidget *parent)
